@@ -27,8 +27,9 @@ To run the project, follow the steps below:
    ```bash
    gradle build
    
-4. Run the project using the following command:  
-   `gradle run`
+4. Run the project using the following command: 
+   ```bash
+   gradle run
 
 After running the project, you should find two CSV files (movies.csv and credits.csv) in the result_data directory.
 
