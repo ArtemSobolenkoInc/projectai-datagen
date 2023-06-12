@@ -1,0 +1,340 @@
+Perform synthetic data generation
+ChatGPT
+Sure, I can provide an example of synthetic data generation in Python using Scikit-Learn. This is an example for a simple classification problem where we create two features, with each feature having two classes. This type of synthetic data generation is great for testing machine learning models when you don't have any real data to work with.
+
+python
+Copy code
+from sklearn.datasets import make_classification
+import pandas as pd
+
+# Generate a binary classification dataset.
+X, y = make_classification(n_samples=1000, n_features=2, n_informative=2, n_redundant=0, n_clusters_per_class=1, random_state=42)
+
+# Convert the generated numpy arrays to pandas DataFrame.
+df = pd.DataFrame(X, columns=['Feature1', 'Feature2'])
+df['Target'] = y
+
+print(df.head())
+This script will generate a dataset with 1000 samples, each with 2 features, and a target variable y. The features are informative and contribute to the classification task. The target variable has two classes, making it a binary classification problem.
+
+You can change the parameters in the make_classification function to suit your specific needs.
+
+Please remember that generating synthetic data like this is only suitable for testing or demonstrating machine learning algorithms. Real-world data often has much more complex patterns and noise that aren't reflected in synthetic data.
+
+Keep in mind that you need the pandas and sklearn packages installed in your Python environment to run this code. You can install them using pip:
+
+bash
+Copy code
+pip install pandas scikit-learn
+
+
+
+
+User
+Use Case #23
+Use Case Title
+Generate test data to validate functionality and identify issues
+Use Case Description
+Generate test data by identifying the range of inputs, outputs, and scenarios necessary for thorough testing of software application. 
+Cover edge cases, data types, and valid and invalid values to ensure robust coverage. 
+Create realistic and diverse datasets, simulating real-world usage. Incorporate a mix of positive and negative test cases.
+
+
+
+
+Technologie: 
+ - JDK 17
+ - Java Gradle-based project
+ - Feel free to add dependencies to fake/dummy data generator libraries like https://github.com/serpro69/kotlin-faker or https://github.com/datafaker-net/datafaker
+ 
+ 
+
+
+Acceptance criteria
+
+•	Generate two linked tables test synthetic data, 100+ entries each.
+•	The generated test data represents an arbitrary dataset of movies, series, and credits related to them.
+•	The generated test data should consist of two tables with the next structure and relationships:
+ 
+titles.id numeric title identifier
+titles.title textual movie (series) name
+titles.description textual title description
+titles.release_year should have a Common Era year format
+titles.age_certification should be one of these: G, PG, PG-13, R, NC-17, U, U/A, A, S, AL, 6, 9, 12, 12A, 15, 18, 18R, R18, R21, M, MA15+, R16, R18+, X18, T, E, E10+, EC, C, CA, GP, M/PG, TV-Y, TV-Y7, TV-G, TV-PG, TV-14, TV-MA
+titles.runtime should be a common title duration in minutes
+titles.genres should contain a list of strings representing various movie (series) genres
+titles.production_country should represent a country in ISO 3166-1 Alpha-3 code
+titles.seasons should represent the number of seasons for series or be empty for movies
+credits.id numeric credits identifier
+credits.title_id corresponding title id
+credits.real_name full credits member name
+credits.character_name corresponding movie (series) character name
+credits.role should represent corresponding role and be one of these: Director, Producer, Screenwriter, Actor, Actress, Cinematographer, Film Editor, Production Designer, Costume Designer, Music Composer
+•	The generated test data should cover a wide range of scenarios, including positive, negative, and edge cases, to ensure comprehensive testing of the application's functionality.
+•	The test data should accurately represent the expected input and output data types, formats, and values, ensuring that it is suitable for validating the application's functionality.
+•	The test data should be diverse and include different combinations of inputs, ensuring that the application is tested against a variety of scenarios.
+•	If the test data includes sensitive information, it should be anonymized or obfuscated to protect user privacy and comply with relevant data protection regulations.
+
+
+
+
+Use Case tasks
+•	Generate test data:
+o	Perform synthetic data generation. Make sure to generate dependencies between generated datasets. Make sure to generate 100+ entries for each table.
+o	Save synthetic data to separate CSV files.
+o	Copy synthetized files and any synthetic data generation source code files (if any) to your use case repository. Make sure to add these files to the version control.
+
+
+Please, create the application according to the text above
+ChatGPT
+Here is a simple Java application that uses the JavaFaker library to generate the synthetic data you specified and writes it to CSV files. This is a Gradle project, so you will need to add the JavaFaker and OpenCSV dependencies to your build.gradle file:
+
+groovy
+Copy code
+dependencies {
+    implementation 'com.github.javafaker:javafaker:1.0.2'
+    implementation 'com.opencsv:opencsv:5.4'
+}
+Firstly, let's define a Movie class to hold our movie data:
+
+java
+Copy code
+public class Movie {
+    private final long id;
+    private final String title;
+    private final String description;
+    private final int releaseYear;
+    private final String ageCertification;
+    private final int runtime;
+    private final List<String> genres;
+    private final String productionCountry;
+    private final String seasons;
+
+    // Getters and Setters
+    // ...
+}
+Similarly, define a Credit class to hold our credits data:
+
+java
+Copy code
+public class Credit {
+    private final long id;
+    private final long titleId;
+    private final String realName;
+    private final String characterName;
+    private final String role;
+
+    // Getters and Setters
+    // ...
+}
+Then, create a DataGenerator class to generate the synthetic data:
+
+java
+Copy code
+import com.github.javafaker.Faker;
+import com.opencsv.CSVWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.*;
+
+public class DataGenerator {
+    private static final Faker faker = new Faker();
+
+    private static final List<String> roles = Arrays.asList("Director", "Producer", "Screenwriter", "Actor", "Actress", "Cinematographer", "Film Editor", "Production Designer", "Costume Designer", "Music Composer");
+    
+    // ...
+
+    public static void main(String[] args) throws IOException {
+        List<Movie> movies = new ArrayList<>();
+        List<Credit> credits = new ArrayList<>();
+
+        for (long i = 0; i < 100; i++) {
+            Movie movie = generateMovie(i);
+            movies.add(movie);
+
+            for (int j = 0; j < 5; j++) {
+                Credit credit = generateCredit(i, movie.getId());
+                credits.add(credit);
+            }
+        }
+
+        writeMoviesToCSV(movies);
+        writeCreditsToCSV(credits);
+    }
+
+    private static Movie generateMovie(long id) {
+        // Generate the movie data using the faker library
+        // ...
+        return new Movie(id, /* Other movie fields */);
+    }
+
+    private static Credit generateCredit(long id, long movieId) {
+        // Generate the credit data using the faker library
+        // ...
+        return new Credit(id, movieId, /* Other credit fields */);
+    }
+
+    private static void writeMoviesToCSV(List<Movie> movies) throws IOException {
+        CSVWriter writer = new CSVWriter(new FileWriter("movies.csv"));
+        
+        // Write the movies data to the CSV file
+        // ...
+
+        writer.close();
+    }
+
+    private static void writeCreditsToCSV(List<Credit> credits) throws IOException {
+        CSVWriter writer = new CSVWriter(new FileWriter("credits.csv"));
+
+        // Write the credits data to the CSV file
+        // ...
+
+        writer.close();
+    }
+}
+Remember to implement the generateMovie and generateCredit methods to generate data using the JavaFaker library and the writeMoviesToCSV and writeCreditsToCSV methods to write the generated data to CSV files. This is just a starting point, you can add more complexity to the data generation as per your needs.
+
+The application uses a loop to generate 100 movies and 5 credits for each movie, resulting in 100 movie entries and 500 credit entries. After generating the data, it writes the data to movies.csv and credits.csv files using OpenCSV. The movies and credits are linked through the movie ID field.
+
+This application does not include any sensitive information, so there is no need to anonymize or obfuscate the data. However, if your real use case includes sensitive data, you should consider implementing suitable anonymization or obfuscation techniques.
+
+
+
+
+
+User
+write full code with all provided fields
+ChatGPT
+Apologies for the confusion earlier. Here's a full code example of the task using JavaFaker library and OpenCSV for writing the data into CSV files. Let's assume we have two simple classes Movie and Credit:
+
+java
+Copy code
+import java.util.List;
+
+public class Movie {
+    public long id;
+    public String title;
+    public String description;
+    public int releaseYear;
+    public String ageCertification;
+    public int runtime;
+    public List<String> genres;
+    public String productionCountry;
+    public int seasons;
+}
+
+public class Credit {
+    public long id;
+    public long titleId;
+    public String realName;
+    public String characterName;
+    public String role;
+}
+Then, we can generate the test data in the following way:
+
+java
+Copy code
+import com.github.javafaker.Faker;
+import com.opencsv.CSVWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.*;
+
+public class DataGenerator {
+    private static final Faker faker = new Faker();
+    private static final String[] ageCertifications = {"G", "PG", "PG-13", "R", "NC-17", "U", "U/A", "A", "S", "AL", "6", "9", "12", "12A", "15", "18", "18R", "R18", "R21", "M", "MA15+", "R16", "R18+", "X18", "T", "E", "E10+", "EC", "C", "CA", "GP", "M/PG", "TV-Y", "TV-Y7", "TV-G", "TV-PG", "TV-14", "TV-MA"};
+    private static final String[] roles = {"Director", "Producer", "Screenwriter", "Actor", "Actress", "Cinematographer", "Film Editor", "Production Designer", "Costume Designer", "Music Composer"};
+    private static final String[] genres = {"Action", "Comedy", "Drama", "Fantasy", "Horror", "Mystery", "Romance", "Thriller", "Western"};
+
+    public static void main(String[] args) throws IOException {
+        List<Movie> movies = new ArrayList<>();
+        List<Credit> credits = new ArrayList<>();
+
+        for (long i = 1; i <= 100; i++) {
+            Movie movie = generateMovie(i);
+            movies.add(movie);
+
+            for (int j = 0; j < 5; j++) {
+                Credit credit = generateCredit((i - 1) * 5 + j + 1, i);
+                credits.add(credit);
+            }
+        }
+
+        writeMoviesToCSV(movies);
+        writeCreditsToCSV(credits);
+    }
+
+    private static Movie generateMovie(long id) {
+        Movie movie = new Movie();
+        movie.id = id;
+        movie.title = faker.book().title();
+        movie.description = faker.lorem().sentence();
+        movie.releaseYear = faker.number().numberBetween(1900, 2023);
+        movie.ageCertification = ageCertifications[faker.random().nextInt(ageCertifications.length)];
+        movie.runtime = faker.number().numberBetween(60, 240);
+        movie.genres = Collections.singletonList(genres[faker.random().nextInt(genres.length)]);
+        movie.productionCountry = faker.address().countryCode();
+        movie.seasons = faker.bool().bool() ? faker.number().numberBetween(1, 10) : 0;
+        return movie;
+    }
+
+    private static Credit generateCredit(long id, long titleId) {
+        Credit credit = new Credit();
+        credit.id = id;
+        credit.titleId = titleId;
+        credit.realName = faker.name().fullName();
+        credit.characterName = faker.superhero().name();
+        credit.role = roles[faker.random().nextInt(roles.length)];
+        return credit;
+    }
+
+    private static void writeMoviesToCSV(List<Movie> movies) throws IOException {
+        CSVWriter writer = new CSVWriter(new FileWriter("movies.csv"));
+        String[] header = {"id", "title", "description", "release_year", "age_certification", "runtime", "genres", "production_country", "seasons"};
+        writer.writeNext(header);
+        for (Movie movie : movies) {
+            writer.writeNext(new String[]{String.valueOf(movie.id), movie.title, movie.description, String.valueOf(movie.releaseYear), movie.ageCertification, String.valueOf(movie.runtime), String.join(",", movie.genres), movie.productionCountry, String.valueOf(movie.seasons)});
+        }
+        writer.close();
+    }
+
+    private static void writeCreditsToCSV(List<Credit> credits) throws IOException {
+        CSVWriter writer = new CSVWriter(new FileWriter("credits.csv"));
+        String[] header = {"id", "title_id", "real_name", "character_name", "role"};
+        writer.writeNext(header);
+        for (Credit credit : credits) {
+            writer.writeNext(new String[]{String.valueOf(credit.id), String.valueOf(credit.titleId), credit.realName, credit.characterName, credit.role});
+        }
+        writer.close();
+    }
+}
+This code generates 100 movies and 500 credits (5 credits per movie), each with random but realistic data, and writes it to two CSV files, movies.csv and credits.csv.
+
+
+
+
+
+User
+CSVWriter writer = new CSVWriter(new FileWriter("credits.csv"));
+CSVWriter writer = new CSVWriter(new FileWriter("movies.csv"));
+
+please, provide this with some specific directory, example: result data
+ChatGPT
+Absolutely, you can specify a directory when creating a FileWriter instance. For example, if you want to save these files in a "result_data" directory, you can change your FileWriter instances to the following:
+
+java
+Copy code
+CSVWriter writer = new CSVWriter(new FileWriter("result_data/credits.csv"));
+...
+CSVWriter writer = new CSVWriter(new FileWriter("result_data/movies.csv"));
+Please note, the result_data directory must exist in the same directory where your Java program is running, or else a FileNotFoundException will occur. You can create directories in Java if they do not exist:
+
+java
+Copy code
+File directory = new File("result_data");
+if (! directory.exists()){
+    directory.mkdir();
+    // If you require it to make the entire directory path including parents,
+    // use directory.mkdirs(); here instead.
+}
+You can add the above code snippet at the beginning of your main function to ensure the result_data directory exists before writing to it.
