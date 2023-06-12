@@ -12,8 +12,20 @@ repositories {
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
+
+    implementation group: 'com.github.javafaker', name: 'javafaker', version: '1.0.2'
+
 }
 
 test {
     useJUnitPlatform()
+}
+
+task run(type: JavaExec) {
+    main = 'Main' // Replace with your main class
+    classpath = sourceSets.main.runtimeClasspath
+    standardInput = System.in
+    if (project.hasProperty('appArgs')) {
+        args Eval.me(appArgs)
+    }
 }
