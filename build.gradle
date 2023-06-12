@@ -22,7 +22,7 @@ test {
 }
 
 task run(type: JavaExec) {
-    main = 'Main' // Replace with your main class
+    main = 'Main'
     classpath = sourceSets.main.runtimeClasspath
     standardInput = System.in
     if (project.hasProperty('appArgs')) {
